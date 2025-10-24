@@ -1,0 +1,1324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GBIO 100 Lab 3: Pollination & Fertilization | CAE Cadorna</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #2e7d32;
+            --primary-dark: #1b5e20;
+            --primary-light: #4caf50;
+            --accent: #8bc34a;
+            --light-bg: #f8fdf8;
+            --card-bg: #ffffff;
+            --text: #333333;
+            --text-light: #666666;
+            --border: #e0e0e0;
+            --shadow: 0 4px 12px rgba(0,0,0,0.08);
+            --shadow-hover: 0 8px 24px rgba(0,0,0,0.12);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: var(--light-bg);
+            color: var(--text);
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        /* Header Styles */
+        header {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            padding: 2.5rem 0;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        header::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" preserveAspectRatio="none"><path d="M0,0 L100,0 L100,100 Z" fill="rgba(255,255,255,0.05)"/></svg>');
+            background-size: cover;
+        }
+        
+        .header-content {
+            position: relative;
+            z-index: 1;
+            text-align: center;
+        }
+        
+        h1 {
+            font-size: 2.8rem;
+            margin-bottom: 0.5rem;
+            font-weight: 700;
+        }
+        
+        .subtitle {
+            font-size: 1.3rem;
+            opacity: 0.9;
+            margin-bottom: 1rem;
+        }
+        
+        .course-info {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-top: 1.5rem;
+            flex-wrap: wrap;
+        }
+        
+        .info-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.95rem;
+        }
+        
+        /* Navigation */
+        nav {
+            background-color: white;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .nav-container {
+            display: flex;
+            justify-content: center;
+        }
+        
+        .nav-link {
+            color: var(--text);
+            padding: 1.2rem 1.8rem;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s;
+            border-bottom: 3px solid transparent;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .nav-link:hover, .nav-link.active {
+            color: var(--primary);
+            border-bottom: 3px solid var(--primary);
+            background-color: rgba(46, 125, 50, 0.05);
+        }
+        
+        /* Main Content */
+        section {
+            padding: 4rem 0;
+            display: none;
+        }
+        
+        section.active {
+            display: block;
+        }
+        
+        .section-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+        
+        h2 {
+            color: var(--primary);
+            font-size: 2.2rem;
+            margin-bottom: 1rem;
+            position: relative;
+            display: inline-block;
+        }
+        
+        h2::after {
+            content: "";
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 4px;
+            background: var(--accent);
+            border-radius: 2px;
+        }
+        
+        .section-description {
+            max-width: 700px;
+            margin: 0 auto;
+            color: var(--text-light);
+            font-size: 1.1rem;
+        }
+        
+        /* Cards */
+        .card {
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            padding: 2rem;
+            margin-bottom: 2rem;
+            transition: transform 0.3s, box-shadow 0.3s;
+            border: 1px solid var(--border);
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-hover);
+        }
+        
+        .card-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .card-icon {
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            font-size: 1.3rem;
+            font-weight: bold;
+            box-shadow: 0 4px 8px rgba(46, 125, 50, 0.3);
+        }
+        
+        .card-title {
+            font-size: 1.5rem;
+            color: var(--primary);
+        }
+        
+        /* Objectives Box */
+        .objectives-box {
+            background: linear-gradient(135deg, #e8f5e9, #f1f8e9);
+            border-left: 5px solid var(--primary);
+            padding: 2rem;
+            border-radius: 8px;
+            margin: 2rem 0;
+        }
+        
+        .objectives-box h3 {
+            color: var(--primary-dark);
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .objectives-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1rem;
+        }
+        
+        .objective-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.8rem;
+        }
+        
+        .objective-icon {
+            color: var(--primary);
+            margin-top: 0.2rem;
+            flex-shrink: 0;
+        }
+        
+        /* Progress Tracker */
+        .progress-container {
+            background-color: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: var(--shadow);
+            margin: 2rem 0;
+        }
+        
+        .progress-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        
+        .progress-bar {
+            height: 12px;
+            background-color: #e0e0e0;
+            border-radius: 6px;
+            overflow: hidden;
+        }
+        
+        .progress {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary-light), var(--primary));
+            border-radius: 6px;
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+        
+        /* Interactive Elements */
+        .interactive-box {
+            background-color: #f5f9f5;
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            border: 1px solid var(--border);
+        }
+        
+        .term-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        
+        .term-item {
+            background-color: white;
+            padding: 1rem;
+            border-radius: 8px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 1px solid var(--border);
+            font-weight: 500;
+        }
+        
+        .term-item:hover {
+            background-color: var(--primary);
+            color: white;
+            transform: translateY(-3px);
+        }
+        
+        .definition-display {
+            background-color: white;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-top: 1.5rem;
+            box-shadow: var(--shadow);
+            border-left: 4px solid var(--primary);
+            display: none;
+        }
+        
+        /* Quiz Styles */
+        .quiz-container {
+            background-color: white;
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: var(--shadow);
+        }
+        
+        .question {
+            margin-bottom: 2rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .question:last-child {
+            border-bottom: none;
+        }
+        
+        .options {
+            margin: 1rem 0;
+        }
+        
+        .option {
+            margin-bottom: 0.8rem;
+            display: flex;
+            align-items: center;
+        }
+        
+        .option input {
+            margin-right: 0.8rem;
+        }
+        
+        /* Buttons */
+        .btn {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            border: none;
+            padding: 0.8rem 1.8rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 500;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            box-shadow: 0 4px 8px rgba(46, 125, 50, 0.3);
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(46, 125, 50, 0.4);
+        }
+        
+        .btn-outline {
+            background: transparent;
+            color: var(--primary);
+            border: 2px solid var(--primary);
+        }
+        
+        .btn-outline:hover {
+            background-color: rgba(46, 125, 50, 0.1);
+        }
+        
+        /* Data Analysis */
+        .data-analysis {
+            background-color: #f9fdf9;
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            border: 1px solid var(--border);
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        th, td {
+            border: 1px solid var(--border);
+            padding: 1rem;
+            text-align: left;
+        }
+        
+        th {
+            background-color: var(--primary);
+            color: white;
+            font-weight: 600;
+        }
+        
+        tr:nth-child(even) {
+            background-color: #f5f9f5;
+        }
+        
+        input[type="text"], input[type="number"], textarea, select {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            font-size: 1rem;
+            transition: border 0.3s;
+        }
+        
+        input:focus, textarea:focus, select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 2px rgba(46, 125, 50, 0.2);
+        }
+        
+        /* Image Placeholders */
+        .placeholder-image {
+            width: 100%;
+            height: 300px;
+            background: linear-gradient(135deg, #e8f5e9, #c8e6c9);
+            border: 2px dashed #4caf50;
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: #2e7d32;
+            font-weight: 500;
+        }
+        
+        .placeholder-image i {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+        
+        .image-container {
+            text-align: center;
+            margin: 1.5rem 0;
+        }
+        
+        .image-caption {
+            font-style: italic;
+            margin-top: 0.5rem;
+            color: var(--text-light);
+        }
+        
+        /* Completion Messages */
+        .completion-message {
+            background: linear-gradient(135deg, #e8f5e9, #f1f8e9);
+            border-radius: 12px;
+            padding: 2rem;
+            margin: 2rem 0;
+            text-align: center;
+            border-left: 5px solid var(--primary);
+        }
+        
+        /* Station Styles */
+        .station {
+            margin-bottom: 3rem;
+        }
+        
+        .station-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid var(--primary-light);
+        }
+        
+        .station-number {
+            background: var(--primary);
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-right: 1rem;
+        }
+        
+        /* Footer */
+        footer {
+            background: linear-gradient(135deg, var(--primary-dark), #144218);
+            color: white;
+            padding: 3rem 0 2rem;
+            margin-top: 3rem;
+        }
+        
+        .footer-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 2rem;
+        }
+        
+        .footer-logo {
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+        
+        .footer-info {
+            text-align: right;
+        }
+        
+        .copyright {
+            text-align: center;
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.2rem;
+            }
+            
+            h2 {
+                font-size: 1.8rem;
+            }
+            
+            .nav-container {
+                flex-direction: column;
+            }
+            
+            .nav-link {
+                justify-content: center;
+            }
+            
+            .objectives-list {
+                grid-template-columns: 1fr;
+            }
+            
+            .term-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .footer-content {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .footer-info {
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <h1>Pollination & Fertilization in Plants</h1>
+                <p class="subtitle">GBIO 100: Developmental Biology Laboratory</p>
+                <p>Asynchronous Online Learning Experience</p>
+                
+                <div class="course-info">
+                    <div class="info-item">
+                        <i class="fas fa-flask"></i>
+                        <span>Laboratory Exercise No. 3</span>
+                    </div>
+                    <div class="info-item">
+                        <i class="far fa-clock"></i>
+                        <span>Self-Paced</span>
+                    </div>
+                    <div class="info-item">
+                        <i class="fas fa-graduation-cap"></i>
+                        <span>3-4 Hours</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+    
+    <nav>
+        <div class="container nav-container">
+            <a href="#overview" class="nav-link active" data-section="overview">
+                <i class="fas fa-home"></i>
+                <span>Overview</span>
+            </a>
+            <a href="#pre-lab" class="nav-link" data-section="pre-lab">
+                <i class="fas fa-book"></i>
+                <span>Pre-Lab</span>
+            </a>
+            <a href="#investigation" class="nav-link" data-section="investigation">
+                <i class="fas fa-search"></i>
+                <span>Investigation</span>
+            </a>
+            <a href="#synthesis" class="nav-link" data-section="synthesis">
+                <i class="fas fa-pencil-alt"></i>
+                <span>Synthesis</span>
+            </a>
+            <a href="#application" class="nav-link" data-section="application">
+                <i class="fas fa-tasks"></i>
+                <span>Application</span>
+            </a>
+        </div>
+    </nav>
+    
+    <div class="container">
+        <!-- Overview Section -->
+        <section id="overview" class="active">
+            <div class="section-header">
+                <h2>Lab Overview</h2>
+                <p class="section-description">Explore the fascinating processes of pollination and double fertilization in flowering plants through interactive virtual experiments and data analysis.</p>
+            </div>
+            
+            <div class="card">
+                <p>This laboratory module connects the development of male and female gametophytes (from previous labs) to the culminating event of sexual reproduction in angiosperms: <strong>double fertilization</strong>. You will analyze provided data and media to understand the processes of pollen tube growth and double fertilization, integrating them into the complete plant life cycle.</p>
+            </div>
+            
+            <div class="objectives-box">
+                <h3><i class="fas fa-bullseye"></i> Learning Objectives</h3>
+                <div class="objectives-list">
+                    <div class="objective-item">
+                        <div class="objective-icon">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                        <div>Explain the process of pollen germination and pollen tube growth</div>
+                    </div>
+                    <div class="objective-item">
+                        <div class="objective-icon">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                        <div>Describe the path of pollen tubes through female reproductive tissues</div>
+                    </div>
+                    <div class="objective-item">
+                        <div class="objective-icon">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                        <div>Identify the key components and outcomes of double fertilization</div>
+                    </div>
+                    <div class="objective-item">
+                        <div class="objective-icon">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                        <div>Analyze experimental data related to pollen viability and germination</div>
+                    </div>
+                    <div class="objective-item">
+                        <div class="objective-icon">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                        <div>Integrate knowledge of plant reproduction into a complete life cycle</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="progress-container">
+                <div class="progress-header">
+                    <h3>Your Progress</h3>
+                    <span id="progress-percent">0% Complete</span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress" id="progress-bar"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Pre-Lab Section -->
+        <section id="pre-lab">
+            <div class="section-header">
+                <h2>Pre-Lab Preparation</h2>
+                <p class="section-description">Review key concepts and test your understanding before beginning the virtual investigation.</p>
+            </div>
+            
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">1</div>
+                    <h3 class="card-title">Concept Review</h3>
+                </div>
+                <p>Before beginning this lab, review these key concepts from previous labs and introductory material:</p>
+                
+                <div class="interactive-box">
+                    <h4>Key Terminology</h4>
+                    <p>Click on each term to see its definition:</p>
+                    <div class="term-grid">
+                        <div class="term-item" onclick="showDefinition('Pollen Tube')">Pollen Tube</div>
+                        <div class="term-item" onclick="showDefinition('Synergid')">Synergid</div>
+                        <div class="term-item" onclick="showDefinition('Double Fertilization')">Double Fertilization</div>
+                        <div class="term-item" onclick="showDefinition('Zygote')">Zygote</div>
+                        <div class="term-item" onclick="showDefinition('Endosperm')">Endosperm</div>
+                        <div class="term-item" onclick="showDefinition('Callose Plug')">Callose Plug</div>
+                    </div>
+                    <div id="definition-display" class="definition-display"></div>
+                </div>
+                
+                <div class="image-container">
+                    <div class="placeholder-image">
+                        <img src="images/plant-reproduction-cycle.jpg" alt="Plant Reproduction Cycle" class="lab-image" onerror="this.style.display='none'">
+                    </div>
+                    <p class="image-caption">Figure 1: The complete angiosperm reproduction cycle showing the connection between male and female gametophytes</p>
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">2</div>
+                    <h3 class="card-title">Pre-Lab Quiz</h3>
+                </div>
+                <p>Test your understanding of the key concepts before proceeding with the virtual investigation.</p>
+                
+                <div class="quiz-container">
+                    <div class="question">
+                        <p><strong>1. What is the primary function of the pollen tube?</strong></p>
+                        <div class="options">
+                            <div class="option"><input type="radio" name="q1" value="a"> A) To protect the pollen grain from dehydration</div>
+                            <div class="option"><input type="radio" name="q1" value="b"> B) To transport sperm cells to the embryo sac</div>
+                            <div class="option"><input type="radio" name="q1" value="c"> C) To attract pollinators to the flower</div>
+                            <div class="option"><input type="radio" name="q1" value="d"> D) To produce additional pollen grains</div>
+                        </div>
+                    </div>
+                    
+                    <div class="question">
+                        <p><strong>2. What is the ploidy level of the endosperm in angiosperms?</strong></p>
+                        <div class="options">
+                            <div class="option"><input type="radio" name="q2" value="a"> A) Haploid (n)</div>
+                            <div class="option"><input type="radio" name="q2" value="b"> B) Diploid (2n)</div>
+                            <div class="option"><input type="radio" name="q2" value="c"> C) Triploid (3n)</div>
+                            <div class="option"><input type="radio" name="q2" value="d"> D) Tetraploid (4n)</div>
+                        </div>
+                    </div>
+                    
+                    <div class="question">
+                        <p><strong>3. Which structure guides the pollen tube to the embryo sac?</strong></p>
+                        <div class="options">
+                            <div class="option"><input type="radio" name="q3" value="a"> A) Antipodal cells</div>
+                            <div class="option"><input type="radio" name="q3" value="b"> B) Integuments</div>
+                            <div class="option"><input type="radio" name="q3" value="c"> C) Synergid cells</div>
+                            <div class="option"><input type="radio" name="q3" value="d"> D) Nucellus</div>
+                        </div>
+                    </div>
+                    
+                    <button class="btn" onclick="checkQuiz()">
+                        <i class="fas fa-paper-plane"></i>
+                        Submit Answers
+                    </button>
+                    <div id="quiz-result" style="margin-top: 15px;"></div>
+                </div>
+            </div>
+
+            <div class="completion-message">
+                <h3><i class="fas fa-check-circle"></i> Pre-Lab Complete!</h3>
+                <p>You've reviewed the key concepts and completed the pre-lab quiz. You're ready to begin the virtual investigation.</p>
+                <button class="btn" onclick="markPreLabComplete()">
+                    <i class="fas fa-arrow-right"></i>
+                    Continue to Investigation
+                </button>
+            </div>
+        </section>
+
+        <!-- Investigation Section -->
+        <section id="investigation">
+            <div class="section-header">
+                <h2>Virtual Investigation</h2>
+                <p class="section-description">Analyze data from three simulated experiments to understand pollination and fertilization processes.</p>
+            </div>
+
+            <div class="station">
+                <div class="station-header">
+                    <div class="station-number">1</div>
+                    <h3>Station 1: Pollen Germination In Vitro</h3>
+                </div>
+                
+                <div class="card">
+                    <p><strong>Experimental Narrative:</strong> A researcher suspended pollen grains in a growth medium with sugar and incubated them at 25°C for 60 minutes to test germination rates.</p>
+                    
+                    <div class="image-container">
+                        <img src="images/pollen-germination.jpg" alt="Germinating Pollen" class="lab-image" onerror="this.style.display='none'">
+                        <p class="image-caption">Figure 2: Observation of pollen germinating in the culture medium at 100x magnification.</p>
+                    </div>
+                    
+                    <div class="data-analysis">
+                        <h4>Data Analysis</h4>
+                        <p>Calculate the germination percentage based on the experimental results:</p>
+                        <table>
+                            <tr>
+                                <th>Category</th>
+                                <th>Count</th>
+                                <th>Percentage</th>
+                            </tr>
+                            <tr>
+                                <td>Germinated Pollen</td>
+                                <td><input type="number" id="germinated" min="0" max="100" value="75" onchange="calculatePercentages()"></td>
+                                <td id="germinated-percent">75%</td>
+                            </tr>
+                            <tr>
+                                <td>Non-germinated Pollen</td>
+                                <td><input type="number" id="non-germinated" min="0" max="100" value="25" onchange="calculatePercentages()"></td>
+                                <td id="non-germinated-percent">25%</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Total</strong></td>
+                                <td id="total-count">100</td>
+                                <td id="total-percent">100%</td>
+                            </tr>
+                        </table>
+                        
+                        <div style="margin-top: 15px;">
+                            <h4>Observations</h4>
+                            <textarea id="pollen-observations" rows="4" style="width: 100%; padding: 10px;" placeholder="Describe the morphology of germinated pollen tubes based on the micrograph..."></textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="station">
+                <div class="station-header">
+                    <div class="station-number">2</div>
+                    <h3>Station 2: Pollen Tubes in the Style</h3>
+                </div>
+                
+                <div class="card">
+                    <p><strong>Experimental Narrative:</strong> A pollinated style was sectioned longitudinally and stained with Aniline Blue, which binds to callose in the pollen tube walls.</p>
+                    
+                    <div class="image-container">
+                        <img src="images/pollen-tubes-style.jpg" alt="Pollen Tubes in Style" class="lab-image" onerror="this.style.display='none'">
+                        <p class="image-caption">Figure 3: Fluorescent micrograph showing pollen tubes growing through the style tissue. (a) Schematic diagram of pollen grains that land on the stigma and germinate to produce pollen tubes that grow within the pistil. (b) Arabidopsis thaliana pollen tubes in pistil, stained by aniline blue. The image was observed under Olympus BX63 automatic fluorescence microscope. Scale bar = 100 μm. (Zheng et al., 2018)</p>
+                    </div>
+                    
+                    <div class="data-analysis">
+                        <h4>Analysis Questions</h4>
+                        <div class="question">
+                            <p><strong>What is the function of callose plugs in pollen tubes?</strong></p>
+                            <textarea id="callose-function" rows="3" style="width: 100%; padding: 10px;" placeholder="Enter your answer here..."></textarea>
+                        </div>
+                        
+                        <div class="question">
+                            <p><strong>Describe the path and growth pattern of pollen tubes through the style:</strong></p>
+                            <textarea id="pollen-path" rows="3" style="width: 100%; padding: 10px;" placeholder="Describe the directional growth and tissue penetration..."></textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="station">
+                <div class="station-header">
+                    <div class="station-number">3</div>
+                    <h3>Station 3: Double Fertilization</h3>
+                </div>
+                
+                <div class="card">
+                    <p><strong>Experimental Narrative:</strong> Ovules were collected 24 hours after pollination. Sections were prepared and stained to show cellular detail.</p>
+                    
+                    <div class="image-container">
+                        <img src="images/fertilized-ovule.jpg" alt="Fertilized Ovule" class="lab-image" onerror="this.style.display='none'">
+                        <p class="image-caption">Figure 4: Fertilized ovule showing zygote formation and developing endosperm</p>
+                    </div>
+                    
+                    <div class="data-analysis">
+                        <h4>Structural Identification</h4>
+                        <p>Identify the visible structures in the fertilized ovule:</p>
+                        <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin: 15px 0;">
+                            <div><input type="checkbox" id="zygote"> <label for="zygote">Zygote</label></div>
+                            <div><input type="checkbox" id="endosperm"> <label for="endosperm">Endosperm</label></div>
+                            <div><input type="checkbox" id="pollen-tube"> <label for="pollen-tube">Pollen Tube</label></div>
+                            <div><input type="checkbox" id="synergid"> <label for="synergid">Degenerated Synergid</label></div>
+                        </div>
+                        
+                        <div style="margin-top: 15px;">
+                            <h4>Comparison with Unfertilized Ovule</h4>
+                            <p>Complete the following table comparing unfertilized and fertilized ovules:</p>
+                            <table>
+                                <tr>
+                                    <th>Feature</th>
+                                    <th>Unfertilized Ovule</th>
+                                    <th>Fertilized Ovule</th>
+                                </tr>
+                                <tr>
+                                    <td>State of Synergids</td>
+                                    <td><input type="text" id="synergids-unfertilized" placeholder="Intact or Functional/Degenerated"></td>
+                                    <td><input type="text" id="synergids-fertilized" placeholder="Intact or Functional/Degenerated"></td>
+                                </tr>
+                                <tr>
+                                    <td>Ploidy of Central Cell</td>
+                                    <td><input type="text" id="ploidy-unfertilized" placeholder="2 nuclei (n)/3n endosperm"></td>
+                                    <td><input type="text" id="ploidy-fertilized" placeholder="2 nuclei (n)/3n endosperm"></td>
+                                </tr>
+                                <tr>
+                                    <td>Presence of Zygote</td>
+                                    <td><input type="text" id="zygote-unfertilized" placeholder="Yes/No"></td>
+                                    <td><input type="text" id="zygote-fertilized" placeholder="Yes/No"></td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="completion-message">
+                <h3><i class="fas fa-check-circle"></i> Virtual Investigation Complete!</h3>
+                <p>You have successfully analyzed all three stations. Proceed to the Synthesis section to compile your findings into a formal lab report.</p>
+                <button class="btn" onclick="markInvestigationComplete()">
+                    <i class="fas fa-arrow-right"></i>
+                    Continue to Synthesis
+                </button>
+            </div>
+        </section>
+
+        <!-- Synthesis Section -->
+        <section id="synthesis">
+            <div class="section-header">
+                <h2>Synthesis & Reporting</h2>
+                <p class="section-description">Compile your findings into a formal laboratory report using the IMRaD format.</p>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon"><i class="fas fa-file-alt"></i></div>
+                    <h3 class="card-title">Laboratory Report</h3>
+                </div>
+                
+                <p>Using the data and observations from your virtual investigation, prepare a formal laboratory report following the IMRaD structure (Introduction, Methods, Results, Discussion).</p>
+                
+                <div class="data-analysis">
+                    <h4>Report Outline</h4>
+                    
+                    <div class="question">
+                        <p><strong>Introduction</strong> (Provide background and state the purpose of the investigation):</p>
+                        <textarea id="introduction" rows="4" style="width: 100%; padding: 10px;" placeholder="Describe the importance of pollination and double fertilization in plant reproduction..."></textarea>
+                    </div>
+                    
+                    <div class="question">
+                        <p><strong>Methods</strong> (Summarize the experimental approaches analyzed):</p>
+                        <textarea id="methods" rows="4" style="width: 100%; padding: 10px;" placeholder="Describe the three virtual stations and their experimental setups..."></textarea>
+                    </div>
+                    
+                    <div class="question">
+                        <p><strong>Results</strong> (Present your key findings from each station):</p>
+                        <textarea id="results" rows="4" style="width: 100%; padding: 10px;" placeholder="Summarize your quantitative data and qualitative observations..."></textarea>
+                    </div>
+                    
+                    <div class="question">
+                        <p><strong>Discussion</strong> (Interpret your results and connect them to biological concepts):</p>
+                        <textarea id="discussion" rows="4" style="width: 100%; padding: 10px;" placeholder="Discuss the significance of pollen tube growth, callose plugs, and double fertilization..."></textarea>
+                    </div>
+                    
+                    <button class="btn" onclick="compileReport()">
+                        <i class="fas fa-compress-arrows-alt"></i>
+                        Compile Report
+                    </button>
+                    
+                    <div id="report-output" style="margin-top: 15px; display: none;">
+                        <h4>Your Compiled Report</h4>
+                        <div id="report-content" style="border: 1px solid var(--border); padding: 15px; background: #f9f9f9; white-space: pre-line; border-radius: 6px;"></div>
+                        <button class="btn" onclick="saveReport()" style="margin-top: 10px;">
+                            <i class="fas fa-download"></i>
+                            Download Report
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="completion-message">
+                <h3><i class="fas fa-check-circle"></i> Synthesis Complete!</h3>
+                <p>You have compiled your laboratory report. Proceed to the final Application section to test your knowledge with real-world scenarios.</p>
+                <button class="btn" onclick="markSynthesisComplete()">
+                    <i class="fas fa-arrow-right"></i>
+                    Continue to Application
+                </button>
+            </div>
+        </section>
+
+        <!-- Application Section -->
+        <section id="application">
+            <div class="section-header">
+                <h2>Application & Knowledge Check</h2>
+                <p class="section-description">Apply your understanding of pollination and fertilization to solve real-world biological problems.</p>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon"><i class="fas fa-lightbulb"></i></div>
+                    <h3 class="card-title">Case Studies & Problem Solving</h3>
+                </div>
+                
+                <p>Apply the concepts you've learned to analyze these real-world scenarios and biological problems.</p>
+                
+                <div class="data-analysis">
+                    <h3>Case Study 1: The Fruitless Garden</h3>
+                    <p><strong>Scenario:</strong> A gardener has tomato plants with abundant flowers but no fruit formation despite healthy plant growth and regular watering.</p>
+                    <p><strong>Task:</strong> Using your knowledge from this lab, identify two possible points of failure in the process from pollination to fertilization and suggest solutions.</p>
+                    <textarea id="case1" rows="4" style="width: 100%; padding: 10px;" placeholder="Explain possible issues and solutions..."></textarea>
+                    
+                    <h3 style="margin-top: 2rem;">Case Study 2: Seedless Watermelons</h3>
+                    <p><strong>Scenario:</strong> Seedless watermelons are triploid (3n) plants that produce fruits without mature seeds.</p>
+                    <p><strong>Task:</strong> Propose a hypothesis for why triploid plants produce seedless fruits, based on the process of double fertilization.</p>
+                    <textarea id="case2" rows="4" style="width: 100%; padding: 10px;" placeholder="Explain the connection between ploidy and seed development..."></textarea>
+                    
+                    <h3 style="margin-top: 2rem;">Concept Integration</h3>
+                    <div class="question">
+                        <p><strong>Contrast the ploidy, formation process, and function of the zygote and the endosperm:</strong></p>
+                        <textarea id="contrast" rows="3" style="width: 100%; padding: 10px;" placeholder="Compare and contrast these two key products of double fertilization..."></textarea>
+                    </div>
+                    
+                    <button class="btn" onclick="checkApplication()" style="margin-top: 1rem;">
+                        <i class="fas fa-check-double"></i>
+                        Submit Application Exercises
+                    </button>
+                    <div id="application-feedback" style="margin-top: 15px;"></div>
+                </div>
+            </div>
+
+            <div class="completion-message" id="final-completion">
+                <h3><i class="fas fa-trophy"></i> Laboratory 3 Complete!</h3>
+                <p>Congratulations! You have successfully completed all components of Lab 3: Pollination & Fertilization in Plants.</p>
+                <p>You have demonstrated understanding of pollen tube growth, double fertilization, and can apply these concepts to real-world biological scenarios.</p>
+                <button class="btn" onclick="markLabComplete()">
+                    <i class="fas fa-award"></i>
+                    Mark Lab Complete
+                </button>
+            </div>
+        </section>
+    </div>
+    
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-logo">
+                    <p>Developed by CAE Cadorna</p>
+                </div>
+                <div class="footer-info">
+                    <p>October 2025</p>
+                    <p>GBIO 100: Developmental Biology Laboratory</p>
+                </div>
+            </div>
+            <div class="copyright">
+                <p>This interactive lab module was designed for asynchronous online learning &copy; 2025</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Navigation functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const navLinks = document.querySelectorAll('.nav-link');
+            const sections = document.querySelectorAll('section');
+            
+            // Show overview section by default
+            showSection('overview');
+            
+            navLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const sectionId = this.getAttribute('data-section');
+                    
+                    // Update active nav link
+                    navLinks.forEach(l => l.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    // Show corresponding section
+                    showSection(sectionId);
+                });
+            });
+            
+            // Initialize progress bar and calculations
+            updateProgress(10);
+            calculatePercentages();
+        });
+        
+        // Enhanced navigation function
+        function showSection(sectionId) {
+            const sections = document.querySelectorAll('section');
+            sections.forEach(section => {
+                section.classList.remove('active');
+                if (section.id === sectionId) {
+                    section.classList.add('active');
+                    // Scroll to top of the section
+                    section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            });
+            
+            // Update progress when navigating
+            updateProgressBasedOnSection(sectionId);
+        }
+        
+        // Progress tracking
+        let progress = 0;
+        
+        function updateProgress(newProgress) {
+            if (newProgress > progress) {
+                progress = newProgress;
+                document.getElementById('progress-bar').style.width = progress + '%';
+                document.getElementById('progress-percent').textContent = progress + '% Complete';
+                
+                // Save to localStorage
+                localStorage.setItem('lab4-progress', progress);
+            }
+        }
+        
+        function updateProgressBasedOnSection(sectionId) {
+            const progressMap = {
+                'overview': 10,
+                'pre-lab': 25,
+                'investigation': 50,
+                'synthesis': 75,
+                'application': 95
+            };
+            
+            if (progressMap[sectionId] && progressMap[sectionId] > progress) {
+                updateProgress(progressMap[sectionId]);
+            }
+        }
+        
+        // Load progress on page load
+        window.onload = function() {
+            const savedProgress = localStorage.getItem('lab4-progress');
+            if (savedProgress) {
+                updateProgress(parseInt(savedProgress));
+            }
+        };
+        
+        // Terminology definitions
+        const definitions = {
+            'Pollen Tube': 'A tubular structure produced by the pollen grain that grows through the style and delivers sperm cells to the embryo sac.',
+            'Synergid': 'One of two cells in the embryo sac that help guide the pollen tube to the egg cell for fertilization.',
+            'Double Fertilization': 'A unique process in angiosperms where one sperm cell fertilizes the egg to form a zygote, and another sperm cell fuses with polar nuclei to form endosperm.',
+            'Zygote': 'The diploid cell formed by the fusion of a sperm cell and an egg cell; the first cell of a new sporophyte generation.',
+            'Endosperm': 'The triploid nutritive tissue in seeds that provides nourishment to the developing embryo.',
+            'Callose Plug': 'Structures within pollen tubes that seal off older portions of the tube, allowing resources to be focused on tip growth.'
+        };
+        
+        function showDefinition(term) {
+            const display = document.getElementById('definition-display');
+            display.innerHTML = `<h4>${term}</h4><p>${definitions[term]}</p>`;
+            display.style.display = 'block';
+        }
+        
+        // Quiz functionality
+        function checkQuiz() {
+            const answers = {
+                q1: 'b',
+                q2: 'c',
+                q3: 'c'
+            };
+            
+            let score = 0;
+            let resultHTML = '<div class="interactive-box"><h4>Quiz Results:</h4><ul>';
+            
+            for (let i = 1; i <= 3; i++) {
+                const questionName = 'q' + i;
+                const selected = document.querySelector(`input[name="${questionName}"]:checked`);
+                
+                if (selected) {
+                    if (selected.value === answers[questionName]) {
+                        score++;
+                        resultHTML += `<li><i class="fas fa-check" style="color: #4caf50;"></i> Question ${i}: Correct!</li>`;
+                    } else {
+                        resultHTML += `<li><i class="fas fa-times" style="color: #f44336;"></i> Question ${i}: Incorrect. The correct answer is ${answers[questionName].toUpperCase()}.</li>`;
+                    }
+                } else {
+                    resultHTML += `<li><i class="fas fa-exclamation-circle" style="color: #ff9800;"></i> Question ${i}: Not answered.</li>`;
+                }
+            }
+            
+            resultHTML += `</ul><p><strong>Score: ${score}/3</strong></p>`;
+            
+            if (score >= 2) {
+                resultHTML += '<p style="color: #4caf50; font-weight: 500;">Well done! You may proceed to the Virtual Investigation.</p>';
+                updateProgress(40);
+            } else {
+                resultHTML += '<p style="color: #f44336;">Please review the pre-lab materials before proceeding.</p>';
+            }
+            
+            resultHTML += '</div>';
+            document.getElementById('quiz-result').innerHTML = resultHTML;
+        }
+        
+        // Data analysis functionality
+        function calculatePercentages() {
+            const germinated = parseInt(document.getElementById('germinated').value) || 0;
+            const nonGerminated = parseInt(document.getElementById('non-germinated').value) || 0;
+            const total = germinated + nonGerminated;
+            
+            if (total > 0) {
+                const germinatedPercent = Math.round((germinated / total) * 100);
+                const nonGerminatedPercent = Math.round((nonGerminated / total) * 100);
+                
+                document.getElementById('germinated-percent').textContent = germinatedPercent + '%';
+                document.getElementById('non-germinated-percent').textContent = nonGerminatedPercent + '%';
+                document.getElementById('total-count').textContent = total;
+                document.getElementById('total-percent').textContent = '100%';
+            }
+        }
+        
+        // Report compilation
+        function compileReport() {
+            const introduction = document.getElementById('introduction').value;
+            const methods = document.getElementById('methods').value;
+            const results = document.getElementById('results').value;
+            const discussion = document.getElementById('discussion').value;
+            
+            if (introduction && methods && results && discussion) {
+                const reportContent = `LABORATORY REPORT No. 3: POLLINATION AND FERTILIZATION IN PLANTS\n
+GBIO 100: Developmental Biology Laboratory
+Student: [Your Name]
+Date: ${new Date().toLocaleDateString()}
+
+INTRODUCTION:
+${introduction}
+
+METHODS:
+${methods}
+
+RESULTS:
+${results}
+
+DISCUSSION:
+${discussion}
+
+CONCLUSION:
+This investigation demonstrated the key processes of pollen germination, pollen tube growth, and double fertilization in angiosperms. The results highlight the efficiency and specificity of plant reproductive mechanisms.`;
+                
+                document.getElementById('report-content').textContent = reportContent;
+                document.getElementById('report-output').style.display = 'block';
+                
+                updateProgress(80);
+            } else {
+                alert('Please complete all sections of the report outline before compiling.');
+            }
+        }
+        
+        function saveReport() {
+            const reportContent = document.getElementById('report-content').textContent;
+            const blob = new Blob([reportContent], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'GBIO100_Lab4_Report.txt';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+        
+        // Application exercises
+        function checkApplication() {
+            const case1 = document.getElementById('case1').value;
+            const case2 = document.getElementById('case2').value;
+            const contrast = document.getElementById('contrast').value;
+            
+            if (case1 && case2 && contrast) {
+                document.getElementById('application-feedback').innerHTML = `
+                    <div class="interactive-box">
+                        <h4>Application Exercises Submitted!</h4>
+                        <p>Your responses have been recorded. Here is the feedback on your answers:</p>
+                        <div class="feedback-item">
+                            <h5>Case Study 1 - The Fruitless Garden:</h5>
+                            <p><strong>Possible issues:</strong> Lack of pollination (no pollinators), pollen incompatibility, or pollen tube growth failure.</p>
+                            <p><strong>Solutions:</strong> Hand pollination, ensuring pollinator presence, or checking for compatibility issues.</p>
+                        </div>
+                        <div class="feedback-item">
+                            <h5>Case Study 2 - Seedless Watermelons:</h5>
+                            <p><strong>Explanation:</strong> Triploid plants have irregular meiosis, producing unbalanced gametes that cannot undergo normal double fertilization, resulting in seedless fruits.</p>
+                        </div>
+                        <div class="feedback-item">
+                            <h5>Concept Integration:</h5>
+                            <p><strong>Zygote:</strong> Diploid (2n), formed by fertilization of egg cell, develops into embryo.</p>
+                            <p><strong>Endosperm:</strong> Triploid (3n), formed by fusion with polar nuclei, provides nutrition.</p>
+                        </div>
+                    </div>
+                `;
+                
+                updateProgress(95);
+            } else {
+                alert('Please complete all application exercises before submitting.');
+            }
+        }
+        
+        // Completion functions - FIXED VERSION
+        function markPreLabComplete() {
+            updateProgress(40);
+            // Navigate to Investigation section
+            document.querySelectorAll('.nav-link').forEach(link => link.classList.remove('active'));
+            document.querySelector('[data-section="investigation"]').classList.add('active');
+            showSection('investigation');
+        }
+        
+        function markInvestigationComplete() {
+            updateProgress(60);
+            // Navigate to Synthesis section
+            document.querySelectorAll('.nav-link').forEach(link => link.classList.remove('active'));
+            document.querySelector('[data-section="synthesis"]').classList.add('active');
+            showSection('synthesis');
+        }
+        
+        function markSynthesisComplete() {
+            updateProgress(85);
+            // Navigate to Application section
+            document.querySelectorAll('.nav-link').forEach(link => link.classList.remove('active'));
+            document.querySelector('[data-section="application"]').classList.add('active');
+            showSection('application');
+        }
+        
+        function markLabComplete() {
+            updateProgress(100);
+            alert('Congratulations! You have completed Lab 3: Pollination & Fertilization in Plants.');
+        }
+    </script>
+</body>
+</html>
